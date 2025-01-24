@@ -35,19 +35,34 @@ def constraint(vars):
     return [p1 + p2 + p3 + p4 - 1, q1 + q2 + q3 + q4 - 1]  # 保证概率之和为1
 
 # 输入支付矩阵
+# payoff_matrix_A = np.array([
+#     [0, 0, 0, 10],   # Player A 的策略 R 对应的收益
+#     [1, 0, 0, 0],  # Player A 的策略 D 对应的收益
+#     [0, 1, 0, 0], # Player A 的策略 A 对应的收益
+#     [0, 0, 1, 0]   # Player A 的策略 B 对应的收益
+# ])
+
+# payoff_matrix_B = np.array([
+#     [0, 0, 0, 1],   # Player B 的策略 R 对应的收益
+#     [1, 0, 0, 0],  # Player B 的策略 D 对应的收益
+#     [0, 1, 0, 0], # Player B 的策略 A 对应的收益
+#     [0, 0, 1, 0]   # Player B 的策略 B 对应的收益
+# ])
+
 payoff_matrix_A = np.array([
-    [0, 0, 0, 10],   # Player A 的策略 R 对应的收益
-    [1, 0, 0, 0],  # Player A 的策略 D 对应的收益
-    [0, 1, 0, 0], # Player A 的策略 A 对应的收益
-    [0, 0, 1, 0]   # Player A 的策略 B 对应的收益
+    [0, 2, -3, 3],   # Player A 的策略 R 对应的收益
+    [1, -1, -1, 4],  # Player A 的策略 D 对应的收益
+    [-1, -3, -2, 10], # Player A 的策略 A 对应的收益
+    [2, -2, -10, 0]   # Player A 的策略 B 对应的收益
 ])
 
 payoff_matrix_B = np.array([
-    [0, 0, 0, 1],   # Player B 的策略 R 对应的收益
-    [1, 0, 0, 0],  # Player B 的策略 D 对应的收益
-    [0, 1, 0, 0], # Player B 的策略 A 对应的收益
-    [0, 0, 1, 0]   # Player B 的策略 B 对应的收益
+    [0, 2, -3, 3],   # Player B 的策略 R 对应的收益
+    [1, -1, -1, 4],   # Player B 的策略 D 对应的收益
+    [-1, -3, -2, 10],  # Player B 的策略 A 对应的收益
+    [2, -2, -10, 0]      # Player B 的策略 B 对应的收益
 ])
+
 
 # 初始猜测
 initial_guess = np.ones(8) * 0.125  # 初始时所有策略的概率相等
@@ -57,16 +72,11 @@ constraints = [{'type': 'eq', 'fun': constraint}]
 result = minimize(payoff, initial_guess, args=(payoff_matrix_A, payoff_matrix_B), constraints=constraints, bounds=[(0, 1)] * 8)
 
 # 输出结果
-def round_small_probabilities(probabilities, threshold=1e-8):
-    """
-    如果概率小于给定阈值，则将其设为零。
-    """
-    return [0 if abs(p) < threshold else p for p in probabilities]
 
 if result.success:
     p1, p2, p3, p4, q1, q2, q3, q4 = result.x
-    p = round_small_probabilities([p1, p2, p3, p4])
-    q = round_small_probabilities([q1, q2, q3, q4])
+    p = np.round([p1, p2, p3, p4], 4)
+    q = np.round([q1, q2, q3, q4], 4)
     
     # 计算平衡点下的期望收益
     E_A = calculate_expected_payoffs_A(p, payoff_matrix_A, q)
