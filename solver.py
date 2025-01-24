@@ -34,27 +34,27 @@ def constraint(vars):
 
 # 输入支付矩阵
 payoff_matrix_A = np.array([
-    [2, 2, 2, 2],   # Player A 的策略 R 对应的收益
-    [1, 0, 0, 0],   # Player A 的策略 D 对应的收益
-    [0, 1, 0, 0],   # Player A 的策略 A 对应的收益
-    [0, 0, 1, 0]    # Player A 的策略 B 对应的收益
+    [0, 2, -3, 3],   # Player A 的策略 R 对应的收益
+    [1, -1, -1, 4],  # Player A 的策略 D 对应的收益
+    [-1, -3, -2, 10], # Player A 的策略 A 对应的收益
+    [2, -2, -10, 0]   # Player A 的策略 B 对应的收益
 ])
 
 payoff_matrix_B = np.array([
-    [0, 0, 0, 1],   # Player B 的策略 R 对应的收益
-    [1, 0, 0, 0],   # Player B 的策略 D 对应的收益
-    [0, 1, 0, 0],   # Player B 的策略 A 对应的收益
-    [0, 0, 1, 0]    # Player B 的策略 B 对应的收益
+    [0, 2, -3, 3],   # Player B 的策略 R 对应的收益
+    [1, -1, -1, 4],   # Player B 的策略 D 对应的收益
+    [-1, -3, -2, 10],  # Player B 的策略 A 对应的收益
+    [2, -2, -10, 0]      # Player B 的策略 B 对应的收益
 ])
 
 # 初始猜测，假设两位玩家策略概率相等
-initial_guess = np.ones(8) * 0.125  # 8个元素
+initial_guess = np.ones(8) * 0.25  # 8个元素
 
 # 设置约束条件
 constraints = [{'type': 'eq', 'fun': constraint}]
 
 # 使用 `minimize` 求解
-result = minimize(objective, initial_guess, args=(payoff_matrix_A, payoff_matrix_B), constraints=constraints, bounds=[(0, 1)] * 8, options={'disp': True, 'maxiter': 10000, 'ftol': 1e-8})
+result = minimize(objective, initial_guess, args=(payoff_matrix_A, payoff_matrix_B.T), constraints=constraints, bounds=[(0, 1)] * 8, options={'disp': True, 'maxiter': 10000, 'ftol': 1e-8})
 
 # 输出结果
 if result.success:
