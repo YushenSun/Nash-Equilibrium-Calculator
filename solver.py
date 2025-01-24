@@ -8,7 +8,7 @@ def calculate_expected_payoffs_A(p_A, p_B, payoff_matrix_A):
 def calculate_expected_payoffs_B(p_A, p_B, payoff_matrix_B):
     return np.sum(np.dot(payoff_matrix_B.T, p_A) * p_B)
 
-# 定义目标函数：最大化期望收益
+# 定义目标函数：同时最大化A和B的期望收益
 def objective(vars, payoff_matrix_A, payoff_matrix_B):
     p_A = vars[:4]
     p_B = vars[4:]
